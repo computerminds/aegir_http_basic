@@ -1,7 +1,9 @@
 <?php
+
+
 /**
-* Implementation of hook_form_alter()
-*/
+ * Implementation of hook_form_alter()
+ */
 function hosting_http_basic_auth_form_alter(&$form, $form_state, $form_id) {
   if ($form_id == 'site_node_form') {
 
@@ -34,8 +36,8 @@ function hosting_http_basic_auth_form_alter(&$form, $form_state, $form_id) {
 }
 
 /**
-* Implementation of hook_insert()
-*/
+ * Implementation of hook_insert()
+ */
 function hosting_http_basic_auth_insert($node) {
   if ($node->http_basic_auth_username) {
     db_query("INSERT INTO {hosting_http_basic_auth} (vid, nid, username, password, message) VALUES (%d, %d, '%s', '%s', '%s')", $node->vid, $node->nid, $node->http_basic_auth_username, $node->http_basic_auth_password, $node->http_basic_auth_message);
@@ -43,9 +45,8 @@ function hosting_http_basic_auth_insert($node) {
 }
 
 /**
-* Implementation of hook_update()
-*/
-
+ * Implementation of hook_update()
+ */
 function hosting_http_basic_auth_update($node) {
   if (FALSE === db_fetch_array(db_query("SELECT username AS http_basic_auth_username, password AS http_basic_auth_password FROM {hosting_http_basic_auth} WHERE vid = %d", $node->vid))) {
     hosting_http_basic_auth_insert($node);
@@ -57,22 +58,22 @@ function hosting_http_basic_auth_update($node) {
 }
 
 /**
-* Implementation of hook_delete()
-*/
+ * Implementation of hook_delete()
+ */
 function hosting_http_basic_auth_delete($node) {
   db_query("DELETE FROM {hosting_http_basic_auth} WHERE nid=%d", $node->nid);
 }
 
 /**
-* Implementation of hook_delete_revision()
-*/
+ * Implementation of hook_delete_revision()
+ */
 function hosting_http_basic_auth_delete_revision($node) {
   db_query("DELETE FROM {hosting_http_basic_auth} WHERE vid=%d", $node->vid);
 }
 
 /**
-* Implementation of hook_nodeapi()
-*/
+ * Implementation of hook_nodeapi()
+ */
 function hosting_http_basic_auth_nodeapi(&$node, $op, $a3 = NULL, $a4 = NULL) {
   if ($node->type == 'site') {
     switch ($op) {
@@ -100,4 +101,3 @@ function hosting_http_basic_auth_nodeapi(&$node, $op, $a3 = NULL, $a4 = NULL) {
     }
   }
 }
-

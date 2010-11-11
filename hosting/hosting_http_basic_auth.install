@@ -1,7 +1,8 @@
 <?php
+
 /**
-* Implementation of hook_schema().
-*/
+ * Implementation of hook_schema().
+ */
 function hosting_http_basic_auth_schema() {
   $schema['hosting_http_basic_auth'] = array(
     'fields' => array(
@@ -39,6 +40,11 @@ function hosting_http_basic_auth_schema() {
   return $schema;
 }
 
+/**
+ * Implementation of hook_update_N().
+ *
+ * Add the message field to the table.
+ */
 function hosting_http_basic_auth_update_6100() {
   $ret = array();
 
@@ -46,17 +52,23 @@ function hosting_http_basic_auth_update_6100() {
     'type' => 'text',
     'not null' => TRUE,
   );
-  
+
   db_add_field($ret, 'hosting_http_basic_auth', 'message', $field['message']);
 
   return $ret;
 }
 
+/**
+ * Implementation of hook_install().
+ */
 function hosting_http_basic_auth_install() {
   // Create tables.
   drupal_install_schema('hosting_http_basic_auth');
 }
 
+/**
+ * Implementation of hook_uninstall().
+ */
 function hosting_http_basic_auth_uninstall() {
   // Remove tables.
   drupal_uninstall_schema('hosting_http_basic_auth');

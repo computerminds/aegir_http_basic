@@ -44,4 +44,3 @@ function http_basic_auth_provision_apache_vhost_config($uri, $data) {
 
   return implode("\n", $lines);
 }
-
