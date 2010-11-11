@@ -1,0 +1,6 @@
+name = HTTP Basic Authentication
+description = Allows admins to specify HTTP basic authentication for sites.
+package = Hosting
+dependencies[] = hosting_site
+
+core = 6.x
