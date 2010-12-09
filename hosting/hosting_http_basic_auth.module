@@ -101,3 +101,45 @@ function hosting_http_basic_auth_nodeapi(&$node, $op, $a3 = NULL, $a4 = NULL) {
     }
   }
 }
+
+/**
+* Implementation of hook_feeds_node_processor_targets_alter().
+*/
+function hosting_http_basic_auth_feeds_node_processor_targets_alter(&$targets, $content_type) {
+  if ($content_type == 'site') {
+    $targets['http_basic_auth_username'] = array(
+      'name' => t('HTTP Basic Auth - username'),
+      'description' => t('Set this to enable HTTP basic auth on the site.'),
+      'callback' => 'hosting_http_basic_auth_set_target_http_basic_auth_simple',
+    );
+
+    $targets['http_basic_auth_password'] = array(
+      'name' => t('HTTP Basic Auth - password'),
+      'description' => t('The password, this is not transferred securely and should be considered in the public domain.'),
+      'callback' => 'hosting_http_basic_auth_set_target_http_basic_auth_simple',
+    );
+
+    $targets['http_basic_auth_message'] = array(
+      'name' => t('HTTP Basic Auth - username'),
+      'description' => t('A message to show when prompting the user for username and password.'),
+      'callback' => 'hosting_http_basic_auth_set_target_http_basic_auth_message',
+    );
+
+  }
+}
+
+/**
+ * Mapping callback for feeds.
+ */
+function hosting_http_basic_auth_set_target_http_basic_auth_simple($node, $target, $value) {
+  if (!empty($value)) {
+    $node->$target = $value;
+  }
+}
+
+/**
+ * Mapping callback for feeds.
+ */
+function hosting_http_basic_auth_set_target_http_basic_auth_message($node, $target, $value) {
+  $node->$target = !empty($value) ? $value : t('Restricted access');
+}
