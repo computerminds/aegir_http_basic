@@ -19,6 +19,10 @@ There are two parts to the code:
   this like any other Drupal module into you hostmaster site.
 - A provision Drush script - contained in the /provision directory. Copy this
   into /var/aegir/.drush/ on your Aegir master server.
+- Aegir sometimes struggles to set the correct permissions on some directories
+  that might stop your site from working. Make sure that
+  `/var/aegir/config/server_NAME/apache` is executable by 'others', which just
+  means that the directory is browsable
 
 Now just enable the module in the Aegir frontend, and you're ready to go.
 
