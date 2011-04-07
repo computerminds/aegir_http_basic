@@ -1,12 +1,40 @@
 <?php
 
+include_once(dirname(__FILE__) . '/../provision.service.inc');
+
+/**
+ * Expose the service type this extension defines to provision.
+ *
+ * @return
+ *   An array with the service type the key, and the default implementation the value.
+ */
+function http_basic_auth_provision_services() {
+  return array('http_basic_auth' => NULL);
+}
+
+/**
+ * The subfolder service base class.
+ */
+class provisionService_http_basic_auth extends provisionService {
+  public $service = 'http_basic_auth';
+
+  /**
+   * Add the subfolder_path property to the site context.
+   */
+  static function subscribe_site($context) {
+    $context->setProperty('http_basic_auth_username');
+    $context->setProperty('http_basic_auth_password');
+    $context->setProperty('http_basic_auth_message');
+  }
+}
+
 /*
  * Implementation of hook_provision_apache_vhost_config()
  */
 function http_basic_auth_provision_apache_vhost_config($uri, $data) {
   $lines = array();
-  $user = drush_get_option('http_basic_auth_username', '');
-  $pass = drush_get_option('http_basic_auth_password', '');
+  $user = d()->http_basic_auth_username;
+  $pass = d()->http_basic_auth_password;
 
   if (!empty($user) && !empty($pass)) {
 
@@ -31,7 +59,7 @@ function http_basic_auth_provision_apache_vhost_config($uri, $data) {
 
     // Now add the file to the vhost:
     $root = d()->root;
-    $message = drush_get_option('http_basic_auth_message', dt('Restricted access'));
+    $message = !empty(d()->http_basic_auth_message) ? d()->http_basic_auth_message : dt('Restricted access');
     $lines[] = "  <Directory \"$root\">";
     $lines[] = "    # HTTP Basic Authentication added by Aegir";
     $lines[] = "    AuthType Basic";

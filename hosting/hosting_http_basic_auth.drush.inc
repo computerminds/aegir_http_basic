@@ -1,14 +1,26 @@
 <?php
 
+/**
+ * Implementation of hook_hosting_site_context_options().
+ */
+function hosting_http_basic_auth_hosting_site_context_options(&$task) {
+  if (isset($task->ref->http_basic_auth_username) && !empty($task->ref->http_basic_auth_username)) {
+    $task->context_options['http_basic_auth_username'] = $task->ref->http_basic_auth_username;
+    $task->context_options['http_basic_auth_password'] = $task->ref->http_basic_auth_password;
+    $task->context_options['http_basic_auth_message'] = $task->ref->http_basic_auth_message;
+  }
+}
 
 /**
- * Implementation of drush_hook_pre_hosting_task()
+ * Implementation of hook_drush_context_import().
  */
-function drush_hosting_http_basic_auth_pre_hosting_task() {
-  $task =& drush_get_context('HOSTING_TASK');
-  if ($task->ref->type == 'site' && ($task->task_type == 'install' || $task->task_type == 'verify')) {
-    $task->options['http_basic_auth_username'] = $task->ref->http_basic_auth_username;
-    $task->options['http_basic_auth_password'] = $task->ref->http_basic_auth_password;
-    $task->options['http_basic_auth_message'] = $task->ref->http_basic_auth_message;
+function hosting_http_basic_auth_drush_context_import($context, &$node) {
+  if ($context->type == 'site') {
+    if (isset($context->http_basic_auth_username) && !empty($context->http_basic_auth_username)) {
+      $node->http_basic_auth_username = $context->http_basic_auth_username;
+      $node->http_basic_auth_password = $context->http_basic_auth_password;
+      $node->http_basic_auth_message = $context->http_basic_auth_message;
+    }
   }
+
 }
