@@ -10,9 +10,9 @@ function hosting_http_basic_auth_hosting_site_context_options(&$task) {
     $task->context_options['http_basic_auth_message'] = $task->ref->http_basic_auth_message;
   }
   else {
-    $task->context_options['http_basic_auth_username'] = '';
-    $task->context_options['http_basic_auth_password'] = '';
-    $task->context_options['http_basic_auth_message'] = '';
+    $task->context_options['http_basic_auth_username'] = NULL;
+    $task->context_options['http_basic_auth_password'] = NULL;
+    $task->context_options['http_basic_auth_message'] = NULL;
   }
 }
 
