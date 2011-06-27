@@ -28,6 +28,29 @@ class provisionService_http_basic_auth extends provisionService {
   }
 }
 
+function _http_basic_auth_create_file($uri, $data, $user, $pass) {
+  // Compute the path of the password file.
+  $path = $data['http_vhostd_path'] . '/../passwords.d/' . $uri;
+
+  // Make sure the directory exists.
+  provision_file()->create_dir(dirname($path), dt('Passwords'), 0711);
+
+  // Generate the pass using php because nginx server may not have apache tools.
+  $pass = crypt($pass);
+  $pass_string = "$user:$pass\n";
+  // Save the password info to the file.
+  provision_file()->file_put_contents($path, $pass_string);
+
+  $path = realpath($path);
+  // Set the permissions:
+  provision_file()->chmod($path, 0644);
+
+  // Sync the password out to the server.
+  d()->service('http')->sync($path);
+    
+  return $path;
+}
+
 /*
  * Implementation of hook_provision_apache_vhost_config()
  */
@@ -37,26 +60,9 @@ function http_basic_auth_provision_apache_vhost_config($uri, $data) {
   $pass = d()->http_basic_auth_password;
 
   if (!empty($user) && !empty($pass)) {
-
-    // Compute the path of the password file.
-    $path = $data['http_vhostd_path'] . '/../passwords.d/' . $uri;
-
-    // Make sure the directory exists.
-    provision_file()->create_dir(dirname($path), dt('Passwords'), 0711);
-
-    // Save the password info to the file.
-    // TODO: don't pop the password on the command line!
-    $cmd = 'htpasswd -cb %s %s %s';
-
-    drush_shell_exec($cmd, $path, $user, $pass);
-    $path = realpath($path);
-
-    // Set the permissions:
-    provision_file()->chmod($path, 0644);
-
-    // Sync the password out to the server.
-    d()->service('http')->sync($path);
-
+    // Create the password file.
+    $path = _http_basic_auth_create_file($uri, $data, $user, $pass);
+    
     // Now add the file to the vhost:
     $root = d()->root;
     $message = !empty(d()->http_basic_auth_message) ? d()->http_basic_auth_message : dt('Restricted access');
@@ -68,6 +74,29 @@ function http_basic_auth_provision_apache_vhost_config($uri, $data) {
     $lines[] = "    AuthUserFile $path";
     $lines[] = "    Require valid-user";
     $lines[] = "  </Directory>";
+  }
+
+  return implode("\n", $lines);
+}
+
+/*
+ * Implementation of hook_provision_nginx_vhost_config()
+ */
+function http_basic_auth_provision_nginx_vhost_config($uri, $data) {
+  $lines = array();
+  $user = d()->http_basic_auth_username;
+  $pass = d()->http_basic_auth_password;
+
+  if (!empty($user) && !empty($pass)) {
+    // Create the password file.
+    $path = _http_basic_auth_create_file($uri, $data, $user, $pass);
+    
+    // Now add the file to the vhost:
+    $root = d()->root;
+    $message = !empty(d()->http_basic_auth_message) ? d()->http_basic_auth_message : dt('Restricted access');    
+    $lines[] = "auth_basic \"$message\";";
+    $lines[] = "auth_basic_user_file $path;";
+    $lines[] = "";
   }
 
   return implode("\n", $lines);
