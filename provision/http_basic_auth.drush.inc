@@ -29,9 +29,8 @@ class provisionService_http_basic_auth extends provisionService {
 }
 
 function _http_basic_auth_create_file($uri, $data, $user, $pass) {
-  $path = '';
-  if (!is_null(d()->service('http')->application_name)) {
-    $app_dir = d()->service('http')->server->config_path . '/' . d()->service('http')->application_name;
+  $app_dir = realpath($data['http_vhostd_path'] . '/..');
+  if (!empty($app_dir)) {
     // Make sure the $app_dir has sufficent permissions, this needs to be
     // readable by the apache workers, but has owner aegir:aegir, so we ensure
     // that others can execute (list) this directory.
