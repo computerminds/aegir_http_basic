@@ -1,6 +1,15 @@
 <?php
 
-include_once(dirname(__FILE__) . '/../provision.service.inc');
+//include_once(dirname(__FILE__) . '/../provision.service.inc');
+
+/**
+ * Implements hook_drush_init()
+ */
+function http_basic_auth_drush_init(){
+  $list = drush_commandfile_list();
+  $provision_drush_inc = $list['provision'];
+  include_once($provision_drush_inc);
+}
 
 /**
  * Expose the service type this extension defines to provision.
