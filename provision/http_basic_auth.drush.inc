@@ -24,7 +24,7 @@ function http_basic_auth_provision_services() {
 /**
  * The subfolder service base class.
  */
-class provisionService_http_basic_auth extends provisionService {
+class Provision_Service_http_basic_auth extends Provision_Service {
   public $service = 'http_basic_auth';
 
   /**
