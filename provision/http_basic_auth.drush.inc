@@ -54,7 +54,19 @@ function _http_basic_auth_create_file($uri, $data, $user, $pass) {
     provision_file()->chmod($path, 0644);
 
     // Sync the password out to the server.
-    d()->service('http')->sync($path);
+    // Logic added to handle pack web server setups
+   $site_platform = d()->platform->name;
+   $web_server = d("$site_platform")->web_server->name;
+   $http_service_type = d("$web_server")->http_service_type;
+   if ($http_service_type == 'pack') {
+     $slave_servers = d("$web_server")->slave_web_servers;
+     foreach ($slave_servers as $slave_server) {
+       d("$slave_server")->service('http')->sync($path);
+     }
+   }
+   else {
+     d()->service('http')->sync($path);
+   }
   }
 
   return $path;
