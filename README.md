@@ -1,6 +1,13 @@
 Aegir HTTP basic authentication
 ===============================
 
+Aegir 2.x
+---------
+
+If you require Aegir 2.x compatibility, then have a look at the [Hosting tasks 
+extra](https://drupal.org/project/hosting_tasks_extra) module which includes this functionality.
+
+
 Introduction
 ------------
 
