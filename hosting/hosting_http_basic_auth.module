@@ -39,7 +39,7 @@ function hosting_http_basic_auth_form_alter(&$form, $form_state, $form_id) {
  * Implementation of hook_insert()
  */
 function hosting_http_basic_auth_insert($node) {
-  if ($node->http_basic_auth_username) {
+  if (!empty($node->http_basic_auth_username)) {
     db_query("INSERT INTO {hosting_http_basic_auth} (vid, nid, username, password, message) VALUES (%d, %d, '%s', '%s', '%s')", $node->vid, $node->nid, $node->http_basic_auth_username, $node->http_basic_auth_password, $node->http_basic_auth_message);
   }
 }

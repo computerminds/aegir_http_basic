@@ -25,7 +25,7 @@ There are two parts to the code:
 - A Drupal module for hostmaster - contained in the /hosting directory. Install
   this like any other Drupal module into you hostmaster site.
 - A provision Drush script - contained in the /provision directory. Copy this
-  into /var/aegir/.drush/provision/aegir_http_basic/ on your Aegir master
+  into /var/aegir/.drush/aegir_http_basic/ on your Aegir master
    server.
 - Aegir sometimes struggles to set the correct permissions on some directories
   that might stop your site from working. Make sure that

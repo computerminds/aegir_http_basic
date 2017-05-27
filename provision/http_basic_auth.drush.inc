@@ -1,6 +1,15 @@
 <?php
 
-include_once(dirname(__FILE__) . '/../provision.service.inc');
+//include_once(dirname(__FILE__) . '/../provision.service.inc');
+
+/**
+ * Implements hook_drush_init()
+ */
+function http_basic_auth_drush_init(){
+  $list = drush_commandfile_list();
+  $provision_drush_inc = $list['provision'];
+  include_once($provision_drush_inc);
+}
 
 /**
  * Expose the service type this extension defines to provision.
@@ -13,13 +22,13 @@ function http_basic_auth_provision_services() {
 }
 
 /**
- * The subfolder service base class.
+ * The http_basic_auth service base class.
  */
-class provisionService_http_basic_auth extends provisionService {
+class Provision_Service_http_basic_auth extends Provision_Service {
   public $service = 'http_basic_auth';
 
   /**
-   * Add the subfolder_path property to the site context.
+   * Add the needed properties to the site context.
    */
   static function subscribe_site($context) {
     $context->setProperty('http_basic_auth_username');
